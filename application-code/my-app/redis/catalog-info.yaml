@@ -14,7 +14,7 @@ metadata:
     - redis 
   links:
     - title: Documentation
-      url: https://github.com/jaoualfr/backstage-minikube-lab-reloaded
+      url: https://github.com/jaoualfr/backstage-minikube
     - url: https://admin.example-org.com
       title: Admin Dashboard
       icon: dashboard

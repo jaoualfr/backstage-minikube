@@ -1,12 +1,14 @@
 #!/bin/bash
 
 # Prompt the user for their GitHub token
-read -p "Enter your GitHub token: " GITHUB_TOKEN
-read -p "Enter your GitHub auth cliend ID: " AUTH_GITHUB_CLIENT_ID
-read -p "Enter your GitHub auth client secret: " AUTH_GITHUB_CLIENT_SECRET
+ read -p "Enter your GitHub token: " GITHUB_TOKEN
+ read -p "Enter your GitHub auth cliend ID: " AUTH_GITHUB_CLIENT_ID
+ read -p "Enter your GitHub auth client secret: " AUTH_GITHUB_CLIENT_SECRET
+
+
 
 # Start cluster. Extra beefy beause Backstage is a bit heavy.
-minikube start --cpus 4 --memory 4096
+# minikube start  --cpus 4 --memory 4096
 
 # Install ArgoCD
 helm install argocd -n argocd helm-charts/infra/argo-cd --values helm-charts/infra/argo-cd/values-custom.yaml --dependency-update --create-namespace
@@ -61,6 +63,9 @@ echo "##########################################################################
 echo "#############################################################################"
 echo "#############################################################################"
 
+
+helm install grafana -n observability helm-charts/infra/grafana --values helm-charts/infra/argo-cd/values-custom.yaml --dependency-update --create-namespace
+
 # Wait for the Grafana pod to be ready
 echo "Waiting for Grafana pod to be ready..."
 until [[ $(kubectl -n observability get pods -l "app.kubernetes.io/name=grafana" -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') == "True" ]]; do
@@ -104,6 +109,10 @@ kubectl create secret generic -n backstage auth-github-client-id --from-literal=
 kubectl create secret generic -n backstage auth-github-client-secret --from-literal=AUTH_GITHUB_CLIENT_SECRET="$AUTH_GITHUB_CLIENT_SECRET"
 kubectl create secret generic -n backstage argocd-auth-token --from-literal=ARGOCD_AUTH_TOKEN="$ARGOCD_AUTH_TOKEN"
 kubectl create secret generic -n backstage grafana-token --from-literal=GRAFANA_TOKEN="$GRAFANA_TOKEN"
+
+
+helm install backstage -n backstage helm-charts/infra/backstage --values helm-charts/infra/backstage/values-custom.yaml --dependency-update --create-namespace
+
 
 # Wait for the Postgres pod to be ready
 echo "Waiting for postgres pod to be ready..."
