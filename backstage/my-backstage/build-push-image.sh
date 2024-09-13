@@ -10,8 +10,8 @@ yarn tsc
 # The configuration files here should match the one you use inside the Dockerfile below.
 yarn build:backend --config ../../app-config.production.yaml
 
-docker image build . -f packages/backend/Dockerfile --tag AATT_DOCKERHUB_USERNAME/backstage:$IMAGE_TAG
-docker push AATT_DOCKERHUB_USERNAME/backstage:$IMAGE_TAG
+docker image build . -f packages/backend/Dockerfile --tag jarod2018/backstage:$IMAGE_TAG
+docker push jarod2018/backstage:$IMAGE_TAG
 
 echo "#############################################################################"
 echo "#############################################################################"
